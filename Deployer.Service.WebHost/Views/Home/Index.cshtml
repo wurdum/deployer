@@ -1,0 +1,38 @@
+﻿@using Deployer.Service.Data
+@model List<Deployer.Service.WebHost.Models.DeployRecord>
+
+@{
+    ViewBag.Title = "Deploys";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var deployStatuses = new Dictionary<DeployStatusModel, string> {
+        {DeployStatusModel.InProcess, "alert-heading"},
+        {DeployStatusModel.Failed, "alert-error"},
+        {DeployStatusModel.Succeed, "alert-success"}
+    };
+}
+
+@foreach (var deploy in Model) {
+    <div class="alert @deployStatuses[deploy.Status]">
+        <dl class="dl-horizontal">
+            <dt>Started</dt>
+            <dd>@deploy.Start</dd>
+            <dt>Finished</dt>
+            <dd>@deploy.End</dd>
+        </dl>
+        <dl class="dl-horizontal">
+            <dt>Session key</dt>
+            <dd>@deploy.Key</dd>
+            <dt>User name</dt>
+            <dd>@deploy.User</dd>
+            <dt>Survey name</dt>
+            <dd>@deploy.Name</dd>
+            <dt>Mode</dt>
+            <dd>@deploy.Mode.ToString()</dd>
+        </dl>
+        @if (deploy.Exceptions != null) {
+            foreach (var exception in deploy.Exceptions) {
+                @Html.Partial("ExceptionView", exception)
+            }
+        }
+    </div>
+}

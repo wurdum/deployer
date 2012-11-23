@@ -1,0 +1,20 @@
+﻿@model Deployer.Service.WebHost.Models.ExceptionRecord
+
+<div class="alert alert-heading">
+    <dl>
+        <dt>Type</dt>
+        <dd>@Model.Type</dd>
+        <dt>Message</dt>
+        <dd>@Model.Message</dd>
+    </dl>
+    <blockquote>
+        <table class="table table-bordered">
+            @foreach (var stackLine in Model.Stacktrace) {
+                <tr><td>@stackLine</td></tr>
+            }
+        </table>
+    </blockquote>
+    @if (Model.InnerEception != null) {
+        @Html.Partial("ExceptionView", Model.InnerEception)
+    }
+</div>

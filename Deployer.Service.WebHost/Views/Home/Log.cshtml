@@ -1,0 +1,42 @@
+﻿@using System.Text.RegularExpressions
+@model Deployer.Service.WebHost.Models.LogModel
+
+@{
+    ViewBag.Title = "Log";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var rx = new Regex(@".*\(ERROR\).*", RegexOptions.Compiled);
+    var action = @HttpContext.Current.Request.RequestContext.RouteData.Values["action"].ToString();
+    var controller = @HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString();
+}
+
+@Html.Hidden("log-curr-url", Url.Action(action, controller, new {file = Model.Active}))
+<ul id="logs" class="nav nav-pills">
+    @foreach(var file in Model.LogEntries) {
+        <li>@Html.ActionLink(file, "Log", new { file })</li>
+    }
+</ul>
+
+@if (Model.Content.Any()) {
+    <ul class="unstyled">
+        @foreach (var line in Model.Content) {
+            var type = @rx.IsMatch(line) ? "alert-error" : "alert-block";
+            <li><pre class="@type">@line</pre></li>
+        }
+    </ul>
+} else {
+    <div class="alert">
+        <h4 class="alert-heading">Warning!</h4>
+        Log file is empty!
+    </div>
+}
+
+<script type="text/javascript">
+    $(function () {
+        var activeUrl = $('#log-curr-url').val();
+        $('#logs').find('>li').each(function () {
+            var li = $(this);
+            if (li.find('>a:first-child').attr('href') == activeUrl)
+                li.addClass('active');
+        });
+    })
+</script>

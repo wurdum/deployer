@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DeployService" Class="DbDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;Initial Catalog=DeployService;Integrated Security=True" SettingsObjectName="Deployer.Service.Data.Properties.Settings" SettingsPropertyName="DeployServiceConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Deploy" Member="Deploys">
+    <Type Name="Deploy">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="[User]" Member="User" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Mode" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SessionKey" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="SurveyName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="StartUtc" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EndUtc" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="Deploy_Exception" Member="Exceptions" ThisKey="Id" OtherKey="DeployId" Type="Exception" />
+      <Association Name="User_Deploy" Member="User1" ThisKey="User" OtherKey="Login" Type="User" IsForeignKey="true" />
+      <Association Name="DeployMode_Deploy" Member="DeployMode" ThisKey="Mode" OtherKey="Id" Type="DeployMode" IsForeignKey="true" />
+      <Association Name="DeployStatus_Deploy" Member="DeployStatus" ThisKey="Status" OtherKey="Id" Type="DeployStatus" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.[User]" Member="Users">
+    <Type Name="User">
+      <Column Name="Login" Type="System.String" DbType="NVarChar(20) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Password" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="User_Deploy" Member="Deploys" ThisKey="Login" OtherKey="User" Type="Deploy" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DeployMode" Member="DeployModes">
+    <Type Name="DeployMode">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="DeployMode_Deploy" Member="Deploys" ThisKey="Id" OtherKey="Mode" Type="Deploy" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DeployStatus" Member="DeployStatus">
+    <Type Name="DeployStatus">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="DeployStatus_Deploy" Member="Deploys" ThisKey="Id" OtherKey="Status" Type="Deploy" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Exception" Member="Exceptions">
+    <Type Name="Exception">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DeployId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="Source" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Message" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="ExceptionData" Type="System.Xml.Linq.XElement" DbType="Xml NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="TimeStamp" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="Deploy_Exception" Member="Deploy" ThisKey="DeployId" OtherKey="Id" Type="Deploy" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

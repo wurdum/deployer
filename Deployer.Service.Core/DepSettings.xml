@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Config>
+  <DeploySettings>
+    <item name="Domain">WTF1735</item>
+    <item name="Login"></item>
+    <item name="Password"></item>
+    <item name="AppPool">AppPoolDeployService</item>
+    <item name="IISAdress">IIS://10.0.0.191/W3SVC/411575735/Root/survey</item>
+    <item name="DbDeleteScript">...\DeployService\bin\Scripts\DeleteDb.sql</item>
+    <item name="DbCreationScript">...\DeployService\bin\Scripts\CreateDb.sql</item>
+    <item name="DbValidationScript">...\DeployService\bin\Scripts\ValidateDb.sql</item>
+    <item name="ConnStringTemplate">...\DeployService\bin\Scripts\ConnectionStrings.config</item>
+    <iten name="AdditionalBinsFolder">...\DeployService\bin\Bins\</iten>
+    <item name="UploadedZipFolder">...\DeployService\Packages\</item>
+    <item name="SurveysFolder">...\</item>
+    <item name="SurveysBackupForlder">...\DeployService\Backup\</item>
+    <item name="ConnectionString">Data Source=.\SQLEXPRESS;Initial Catalog=master;User ID=wurdum;password=123</item>
+    <item name="DeployerConnectionString">Data Source=.\SQLEXPRESS;Initial Catalog=DeployService;User ID=wurdum;password=123</item>
+  </DeploySettings>
+  <!-- We update all files where each rule from rules set returns True,
+       if one of the rules returns false - file will not be updated.
+       Word case is ignored in comparing.  -->
+  <UpdateRules>
+    <mode id="1" name="Bin" updateDir="bin">
+      <rule func="startsWith">bin</rule>
+    </mode>
+    <mode id="2" name="AppData" updateDir="app_data/questionsdata">
+      <rule func="startsWith">app_data\questionsdata</rule>
+    </mode>
+    <mode id="3" name="AllExceptConf" updateDir="/">
+      <rule modifier="not" func="equals">web.config</rule>
+    </mode>
+    <mode id="4" name="All" updateDir="/" />
+    <neverToUpdate>
+      <rule modifier="not" func="equals">connectionstrings.config</rule>
+      <rule modifier="not" func="endsWith">white.csv</rule>
+      <rule modifier="not" func="endsWith">black.csv</rule>
+      <rule modifier="not" func="equals">Export</rule>
+      <rule modifier="not" func="equals">Exceptions</rule>
+      <rule modifier="not" func="equals">bin\spssio32.dll</rule>
+      <rule modifier="not" func="equals">bin\system.web.mvc.dll</rule>
+      <rule modifier="not" func="equals">bin\win64\icudt38.dll</rule>
+      <rule modifier="not" func="equals">bin\win64\icuin38.dll</rule>
+      <rule modifier="not" func="equals">bin\win64\icuuc38.dll</rule>
+      <rule modifier="not" func="equals">bin\win64\spssio64.dll</rule>
+    </neverToUpdate>
+  </UpdateRules>
+</Config>

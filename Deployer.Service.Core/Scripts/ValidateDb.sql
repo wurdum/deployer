@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM [master].[sys].[databases] WHERE [Name] = @dbName
