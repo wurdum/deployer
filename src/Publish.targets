@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="PublishToFileSystem">
+  <PropertyGroup>
+    <PublishDestination Condition="'$(PublishDestination)' == ''">E:\Share.Deployer\Deployer\</PublishDestination>
+    <ConfigsDestination Condition="'$(ConfigsDestination)' == ''">E:\Share.Deployer\Configs\</ConfigsDestination>
+    <TargetServer Condition="'$(TargetServer)' == ''">ws2008</TargetServer>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform>AnyCPU</Platform>
+    <OutputPath>bin\</OutputPath>
+    <BinsFolderName>Bins</BinsFolderName>
+    <ScriptsFolderName>Scripts</ScriptsFolderName>
+    <WebHostProject>Deployer.Service.WebHost</WebHostProject>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+
+  <Target Name="PublishToFileSystem">
+    <Error Condition="'$(PublishDestination)' == ''" Text="The PublishDestination property must be set to the intended publishing destination." />
+    <Error Condition="'$(ConfigsDestination)' == ''" Text="The ConfigsDestination property must be set to the intended configs destination." />
+    <Error Condition="'$(TargetServer)' == ''" Text="The TargetServer property must be set to the intended 'ConfigsDestination' 
+           subdirectory with configuration files for target server. Could be 'ws2003' or 'ws2008'" />
+    
+    <Message Text=">> Starting to build solution to '$(PublishDestination)' directory" Importance="High" />
+    <MSBuild Projects="$(WebHostProject)\$(WebHostProject).csproj" 
+             Properties="Configuration=$(Configuration);Platform=$(Platform)"
+             Targets="PipelinePreDeployCopyAllFilesToOneFolder" />
+
+    <ItemGroup>
+      <FilesToDelete Include="$(PublishDestination)\**\*"/>
+      <DirectoriessToDelete Include="%(FilesToDelete.RelativeDir)"/>
+    </ItemGroup>
+
+    <Message Text=">> Cleaning '$(PublishDestination)' directory" Importance="High" />
+      <Delete Files="@(FilesToDelete)"  ContinueOnError="True" />
+      <RemoveDir Directories="@(DirectoriessToDelete)" ContinueOnError="True" />
+      <MakeDir Condition="!Exists($(PublishDestination))" Directories="$(PublishDestination)" />
+    <Message Text="Done..." Importance="High" />
+
+    <Message Text=">> Copying solution files to '$(PublishDestination)'" Importance="High" />
+      <ItemGroup>
+        <PublishFiles Include="$(WebHostProject)\$(_PackageTempDir)\**\*.*" />
+      </ItemGroup>
+      <Copy SourceFiles="@(PublishFiles)" DestinationFiles="@(PublishFiles->'$(PublishDestination)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Message Text="Done..." Importance="High" />
+
+    <Message Text=">> Preparing solution to launch" Importance="High" />
+    
+      <Message Text=">>>> Creating 'Backup', 'Packages' folders" Importance="High" />
+      <MakeDir Directories="$(PublishDestination)\Backup;$(PublishDestination)\Packages" />
+    
+      <Message Text=">>>> Moving 'Bins' folder" Importance="High" /> 
+      <ItemGroup>
+        <BinsFolderFiles Include="$(PublishDestination)\bin\$(BinsFolderName)\**\*.*" />
+      </ItemGroup>
+      <MakeDir Directories="$(PublishDestination)\$(BinsFolderName)" />
+      <Copy SourceFiles="@(BinsFolderFiles)" DestinationFiles="@(BinsFolderFiles->'$(PublishDestination)\$(BinsFolderName)\%(RecursiveDir)%(Filename)%(Extension)')" />
+      <RemoveDir Directories="$(PublishDestination)\bin\$(BinsFolderName)" />
+
+      <Message Text=">>>> Moving 'Scripts' folder" Importance="High" />
+      <ItemGroup>
+        <ScriptsFolderFiles Include="$(PublishDestination)\bin\$(ScriptsFolderName)\**\*.*" />
+      </ItemGroup>
+      <MakeDir Directories="$(PublishDestination)\$(ScriptsFolderName)" />
+      <Copy SourceFiles="@(ScriptsFolderFiles)" DestinationFiles="@(ScriptsFolderFiles->'$(PublishDestination)\$(ScriptsFolderName)\%(RecursiveDir)%(Filename)%(Extension)')" />
+      <RemoveDir Directories="$(PublishDestination)\bin\$(ScriptsFolderName)" />
+
+      <Message Text=">>>> Replacing config files with correct ones" Importance="High" />
+      <Delete Files="$(PublishDestination)\web.config"></Delete>
+      <Copy SourceFiles="$(ConfigsDestination)\$(TargetServer)\web.config" DestinationFiles="$(PublishDestination)\web.config" />
+      <Delete Files="$(PublishDestination)\Scripts\ConnectionStrings.config"></Delete>
+      <Copy SourceFiles="$(ConfigsDestination)\$(TargetServer)\Scripts\ConnectionStrings.config" DestinationFiles="$(PublishDestination)\Scripts\ConnectionStrings.config" />
+    
+    <Message Text="Done..." Importance="High" />
+  </Target>
+  
+</Project>

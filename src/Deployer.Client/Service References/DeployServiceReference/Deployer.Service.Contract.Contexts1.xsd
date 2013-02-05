@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Deployer.Service.Contract.Contexts" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Deployer.Service.Contract.Contexts" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="DeployContext">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DatabaseName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DirectoryName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Mode" type="tns:DeployMode" />
+      <xs:element name="UriName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DeployContext" nillable="true" type="tns:DeployContext" />
+  <xs:simpleType name="DeployMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Install" />
+      <xs:enumeration value="UpdateBin" />
+      <xs:enumeration value="UpdateAppData" />
+      <xs:enumeration value="UpdateAllExceptConf" />
+      <xs:enumeration value="UpdateAll" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="DeployMode" nillable="true" type="tns:DeployMode" />
+  <xs:complexType name="ActionContext">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Steps" nillable="true" type="tns:ArrayOfActionStepContext" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ActionContext" nillable="true" type="tns:ActionContext" />
+  <xs:complexType name="ArrayOfActionStepContext">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ActionStepContext" nillable="true" type="tns:ActionStepContext" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfActionStepContext" nillable="true" type="tns:ArrayOfActionStepContext" />
+  <xs:complexType name="ActionStepContext">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Key" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Status" type="tns:StepStatus" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ActionStepContext" nillable="true" type="tns:ActionStepContext" />
+  <xs:simpleType name="StepStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">-1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="InProgress">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">0</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Complete">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Failed">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="StepStatus" nillable="true" type="tns:StepStatus" />
+  <xs:complexType name="ErrorContext">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Exception" nillable="true">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:any minOccurs="0" processContents="lax" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Timestamp" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ErrorContext" nillable="true" type="tns:ErrorContext" />
+  <xs:complexType name="UnhandledException">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="InnerExMessage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Source" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StackTrace" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="UnhandledException" nillable="true" type="tns:UnhandledException" />
+</xs:schema>

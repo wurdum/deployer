@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="BuildToFileSystem">
+  <PropertyGroup>
+    <BuildDestination Condition="'$(BuildDestination)' == ''">E:\Share.Deployer\Deployer.Tests\</BuildDestination>
+    <ConfigsDestination Condition="'$(ConfigsDestination)' == ''">E:\Share.Deployer\Configs\</ConfigsDestination>
+    <TargetServer Condition="'$(TargetServer)' == ''">ws2008</TargetServer>
+    <Configuration>Tests</Configuration>
+    <Platform>AnyCPU</Platform>
+    <TestProject>Deployer.Tests.Service</TestProject>
+    <TestRunScript>.\TestsRun.ps1</TestRunScript>
+    <WS2003Url>http://192.168.1.11:5985</WS2003Url>
+    <WS2003UserName>RemoteUser</WS2003UserName>
+    <WS2003Passwd>Password</WS2003Passwd>
+    <WS2008Url>http://192.168.1.14:5985</WS2008Url>
+    <WS2008UserName>RemoteUser</WS2008UserName>
+    <WS2008Passwd>Password</WS2008Passwd>
+  </PropertyGroup>
+  
+  <Target Name="BuildToFileSystem">
+    <Error Condition="'$(BuildDestination)' == ''" Text="The PublishDestination property must be set to the intended publishing destination." />
+    <Error Condition="'$(ConfigsDestination)' == ''" Text="The ConfigsDestination property must be set to the intended configs destination." />
+    <Error Condition="'$(TargetServer)' == ''" Text="The TargetServer property must be set to the intended 'ConfigsDestination' 
+           subdirectory with configuration files for target server. Could be 'ws2003' or 'ws2008'" />
+
+    <Message Text=">> Starting to build test configuration of the solution to '$(BuildDestination)' directory" Importance="High" />
+    <MSBuild Projects="$(TestProject)\$(TestProject).csproj"
+             Properties="Configuration=$(Configuration);Platform=$(Platform);OutputPath=$(BuildDestination)"
+             Targets="Build"/>
+    <Message Text="Done" />
+    
+    <Message Text=">> Replasing config files with server '$(TargetServer)' specific" Importance="High" />
+      <Delete Files="$(BuildDestination)\$(TestProject).dll.config" />
+      <Copy SourceFiles="$(ConfigsDestination)\$(TargetServer).tests\$(TestProject).dll.config" DestinationFiles="$(BuildDestination)\$(TestProject).dll.config" />
+    <Message Text="Done" Importance="High" />
+
+    <Message Text=">> Running tests on remote '$(TargetServer)'" Importance="High" />
+      <Exec Command="powershell.exe -command &quot;&amp; { $(TestRunScript) &apos;$(WS2003Url)&apos; &apos;$(WS2003UserName)&apos; &apos;$(WS2003Passwd)&apos; &apos;$(TestProject).dll.config&apos; } &quot;" 
+            Condition="'$(TargetServer)' == 'ws2003'" />
+      <Exec Command="powershell.exe -command &quot;&amp; { $(TestRunScript) &apos;$(WS2008Url)&apos; &apos;$(WS2008UserName)&apos; &apos;$(WS2008Passwd)&apos; &apos;$(TestProject).dll.config&apos; } &quot;" 
+            Condition="'$(TargetServer)' == 'ws2008'" />
+    <Message Text="Done" Importance="High" />
+  </Target>
+</Project>

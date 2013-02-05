@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/Deployer.Service.Contract.Contexts" />
+  <xs:element name="OpenSession">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="folderName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OpenSessionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="OpenSessionResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SendFilesChunk">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="chunk" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SendFilesChunkResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SendFilesChunkResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Deploy">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Deployer.Service.Contract.Contexts" minOccurs="0" name="context" nillable="true" type="q1:DeployContext" />
+        <xs:element minOccurs="0" name="filesHash" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OnActionStart">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Deployer.Service.Contract.Contexts" minOccurs="0" name="context" nillable="true" type="q2:ActionContext" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OnRollback">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Deployer.Service.Contract.Contexts" minOccurs="0" name="context" nillable="true" type="q3:ActionContext" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NotifyStepState">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Deployer.Service.Contract.Contexts" minOccurs="0" name="context" nillable="true" type="q4:ActionStepContext" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OnError">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Deployer.Service.Contract.Contexts" minOccurs="0" name="context" nillable="true" type="q5:ErrorContext" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OnFault">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Deployer.Service.Contract.Contexts" minOccurs="0" name="exception" nillable="true" type="q6:UnhandledException" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OnClose">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

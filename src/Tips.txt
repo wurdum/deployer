@@ -1,0 +1,6 @@
+Add full access to user from .config file to 'c:\Windows\System32\inetsrv\config\' to run IIS7 tests.
+Path to IIS6 metabase - C:\Windows\System32\inetsrv\metabase.xml
+
+For win2003 cert:
+E:\FindPrivateKey\CS\bin>FindPrivateKey My LocalMachine -n "CN=DeployerCA"
+E:\FindPrivateKey\CS\bin>cacls "C:\Documents and Settings\All Users\Application Data\Microsoft\Crypto\RSA\MachineKeys\9e857dbffcb5dd404eb20d7ccec9395e_db813a5a-9c4b-493c-bdbd-e50b9d38a4ac" /E /G "NT AUTHORITY\ASPNET":R

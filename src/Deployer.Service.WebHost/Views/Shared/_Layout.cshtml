@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Content/bootstrap.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/style.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
+</head>
+    <body>
+        @{
+            var action = @HttpContext.Current.Request.RequestContext.RouteData.Values["action"].ToString();
+            var controller = @HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString();
+        }
+        @Html.Hidden("master-curr-url", Url.Action(action, controller))
+        <div class="container page-context">
+            <ul id="navigation" class="nav nav-tabs">
+                <li>@Html.ActionLink("Deploys", "Index", "Home")</li>
+                <li>@Html.ActionLink("Log", "Log", "Home")</li>
+            </ul>
+            @RenderBody()
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                var activeUrl = $('#master-curr-url').val();
+                $('#navigation').find('>li').each(function () {
+                    var li = $(this);
+                    if (li.find(">a:first-child").attr('href') == activeUrl)
+                        li.addClass('active');
+                });
+            })
+        </script>
+    </body>
+</html>

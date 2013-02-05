@@ -1,0 +1,3 @@
+msbuild Publish.targets /v:m
+msbuild Tests.targets /v:m
+msbuild Tests.targets /p:TargetServer=ws2003 /v:m
